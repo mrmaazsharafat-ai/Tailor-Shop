@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ٹیلر شاپ مینیجر</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--g:#0f766e;--g2:#115e59;--bg:#f1f5f4;--card:#fff;--line:#d9e2e0;--tx:#1b2b29;--red:#b91c1c;--amb:#b45309;--blue:#1d4ed8}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:'Noto Naskh Arabic',Tahoma,'Segoe UI',Arial,sans-serif;font-size:17px;line-height:1.7}
+header{background:var(--g);color:#fff;padding:10px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+header h1{margin:0;font-size:22px;flex:1}
+nav{display:flex;gap:6px;flex-wrap:wrap}
+nav button{background:rgba(255,255,255,.15);color:#fff;border:0;padding:8px 14px;border-radius:8px;font:inherit;cursor:pointer}
+nav button.on{background:#fff;color:var(--g2);font-weight:700}
+main{max-width:1100px;margin:0 auto;padding:16px}
+h2{margin:6px 0 12px;font-size:22px}h3{margin:0 0 10px;font-size:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:14px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:14px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.stat small{color:#5b6f6c;display:block}.stat b{font-size:26px}
+.bar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:12px}
+.bar input,.bar select{flex:1;min-width:180px}
+input,select,textarea{font:inherit;padding:8px 10px;border:1px solid #b9c7c4;border-radius:8px;background:#fff;width:100%;color:var(--tx)}
+input:focus,select:focus,textarea:focus{outline:2px solid #5eead4;border-color:var(--g)}
+label{display:block;font-size:15px;color:#41544f}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.grid .full{grid-column:1/-1}
+.btn{background:var(--g);color:#fff;border:0;padding:9px 16px;border-radius:8px;font:inherit;cursor:pointer;display:inline-block;text-align:center}
+.btn:hover{background:var(--g2)}
+.btn.gray{background:#64748b}.btn.red{background:var(--red)}.btn.wa{background:#16a34a}.btn.blue{background:var(--blue)}.btn.sm{padding:3px 10px;font-size:14px}
+.x{background:transparent;border:0;color:var(--red);font-size:18px;cursor:pointer}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.scroll{overflow-x:auto}
+table.tbl{width:100%;border-collapse:collapse;background:#fff}
+.tbl th{background:#e6f0ee;text-align:right;padding:8px;font-size:15px;white-space:nowrap}
+.tbl td{padding:7px 8px;border-top:1px solid var(--line);vertical-align:middle}
+.tbl tr.click{cursor:pointer}.tbl tr.click:hover{background:#f0f8f6}
+.num{direction:ltr;text-align:left;white-space:nowrap}
+.due{color:var(--red);font-weight:700}.ok{color:#15803d;font-weight:700}
+.chip{display:inline-block;background:#e6f0ee;border-radius:14px;padding:1px 10px;margin:2px;font-size:15px}
+.chip b{color:var(--g2)}
+.badge{padding:2px 10px;border-radius:12px;font-size:14px;background:#e2e8f0}
+.s1{background:#fef3c7;color:var(--amb)}.s2{background:#dbeafe;color:var(--blue)}.s3{background:#dcfce7;color:#15803d}
+#modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;overflow:auto;padding:16px}
+#modal.open{display:block}
+.mbox{background:#fff;border-radius:12px;max-width:560px;margin:20px auto;overflow:hidden}
+.mbox.wide{max-width:800px}
+.mh{background:var(--g);color:#fff;padding:10px 16px;display:flex;justify-content:space-between;align-items:center}
+.mh .x{color:#fff}
+.mb{padding:16px}
+.banner{background:#fef3c7;border:1px solid #fcd34d;border-radius:10px;padding:10px 14px;margin-bottom:14px;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:10px 20px;border-radius:24px;display:none;z-index:99}
+.mrow{display:grid;grid-template-columns:1fr 110px 32px;gap:8px;margin-bottom:8px}
+.big{font-size:30px;font-weight:700}
+.bill{border:2px solid #333;padding:16px;background:#fff;color:#000}
+.bill .bh{text-align:center;border-bottom:2px solid #333;margin-bottom:8px}
+.bill h2{margin:0}
+.bmeta{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:4px 0}
+.bt{width:100%;border-collapse:collapse;margin:10px 0}
+.bt th,.bt td{border:1px solid #333;padding:4px 8px;text-align:right}
+.bsum{text-align:left;margin-top:6px}.bsum div{margin:2px 0}
+.bfoot{text-align:center;margin-top:12px;border-top:1px dashed #333;padding-top:6px}
+#printArea{display:none}
+@media print{
+ body>*:not(#printArea){display:none!important}
+ #printArea{display:block}
+ body{background:#fff}
+ @page{margin:10mm}
+}
+
+body.native .pr{display:none!important}
+@media(max-width:640px){
+ body{font-size:16px}
+ header{padding:8px 10px}header h1{font-size:19px;flex-basis:100%}
+ nav{flex-wrap:nowrap;overflow-x:auto;width:100%;padding-bottom:4px}
+ nav button{white-space:nowrap;padding:8px 12px}
+ main{padding:10px}
+ .btn{padding:10px 14px}
+ .mbox{margin:8px auto}.mb{padding:12px}
+ .tbl th,.tbl td{padding:6px 5px;font-size:14px}
+ .mrow{grid-template-columns:1fr 90px 28px}
+ .acts .btn{flex:1 1 45%}
+}
+@media print{body.native *{}}
+
+#splash{position:fixed;inset:0;z-index:999;background:radial-gradient(circle at 50% 40%,#14b8a6,#0f766e 55%,#064e47);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;direction:ltr;text-align:center;transition:opacity .6s ease,visibility .6s}
+#splash.hide{opacity:0;visibility:hidden}
+#splash .logo{width:110px;height:110px;border-radius:28px;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center;font-size:56px;animation:pop .9s cubic-bezier(.2,1.4,.4,1) both,pulse 2s ease-in-out 1s infinite}
+#splash .brand{font:700 32px/1.2 Georgia,'Segoe UI',serif;letter-spacing:1px;margin-top:26px;opacity:0;animation:rise .8s ease .6s forwards}
+#splash .pw{font:400 17px/1.4 'Segoe UI',Arial,sans-serif;margin-top:12px;opacity:0;letter-spacing:.5px;animation:rise .8s ease 1.2s forwards}
+#splash .pw b{font-weight:700;color:#fde68a}
+#splash .bar2{width:150px;height:4px;border-radius:4px;background:rgba(255,255,255,.25);margin-top:34px;overflow:hidden;opacity:0;animation:rise .5s ease 1.4s forwards}
+#splash .bar2 i{display:block;height:100%;width:0;background:#fff;border-radius:4px;animation:load 1.3s ease 1.5s forwards}
+@keyframes pop{from{transform:scale(.2) rotate(-25deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
+@keyframes pulse{50%{box-shadow:0 0 0 18px rgba(255,255,255,.08)}}
+@keyframes rise{from{transform:translateY(18px);opacity:0}to{transform:none;opacity:1}}
+@keyframes load{to{width:100%}}
+</style>
+</head>
+<body>
+<div id="splash"><div class="logo">✂️</div><div class="brand">PrimeSoft Solutions</div><div class="pw">Powered by <b>Maaz Sharafat</b></div><div class="bar2"><i></i></div></div>
+<header>
+ <h1>✂️ <span id="shopTitle"></span></h1>
+ <nav>
+  <button data-v="home" onclick="go('home')">Home</button>
+  <button data-v="customers" onclick="go('customers')">Customers</button>
+  <button data-v="orders" onclick="go('orders')">Orders &amp; Bills</button>
+  <button data-v="report" onclick="go('report')">Reports</button>
+  <button data-v="settings" onclick="go('settings')">Settings / Backup</button>
+ </nav>
+</header>
+<main id="main"></main>
+<div id="modal"></div>
+<div id="printArea"></div>
+<div id="toast"></div>
+
+<script>
+const KEY='tailor_db_v1',SNAP='tailor_snaps_v1';
+const ST=['زیر تیاری','تیار','حوالے کر دیا'];
+const TYPES={
+ 'شلوار قمیض':['قمیض لمبائی','کندھا','بازو لمبائی','چھاتی','کمر','گھیرا','گلا','شلوار لمبائی','پائنچہ','ہپ'],
+ 'پینٹ شرٹ':['شرٹ لمبائی','کندھا','بازو','چھاتی','کمر','کالر','پینٹ لمبائی','پینٹ کمر','ہپ','ران','گھٹنا','موری'],
+ 'کوٹ / ویسٹ کوٹ':['کوٹ لمبائی','کندھا','بازو','چھاتی','کمر','ہپ','ویسٹ کوٹ لمبائی'],
+ 'شیروانی':['لمبائی','کندھا','بازو','چھاتی','کمر','ہپ','گلا'],
+ 'زنانہ سوٹ':['قمیض لمبائی','کندھا','بازو','چھاتی','کمر','ہپ','گھیرا','گلا','شلوار لمبائی','پائنچہ'],
+ 'دوسرا':[]
+};
+const $=(s,r=document)=>r.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const num=v=>{const n=parseFloat(v);return isNaN(n)?0:n};
+const fmt=n=>Math.round(n).toLocaleString('en-US');
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const todayISO=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const fd=iso=>{if(!iso)return '';const p=iso.split('-');return p[2]+'/'+p[1]+'/'+p[0]};
+function blank(){return{settings:{shop:'میرا ٹیلر شاپ',phone:'',addr:'',lastBackup:0,billNo:1},customers:[],measures:[],orders:[],payments:[]}}
+function load(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.customers){const b=blank();d.settings=Object.assign(b.settings,d.settings||{});return Object.assign(b,d)}}catch(e){}return blank()}
+let db=load();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){toast('محفوظ نہیں ہو سکا! فوراً بیک اپ لیں')}snapshot();autoPhoneBackup()}
+function getSnaps(){try{return JSON.parse(localStorage.getItem(SNAP)||'[]')}catch(e){return[]}}
+function snapshot(){try{let s=getSnaps();const day=todayISO(),data=JSON.stringify(db);const last=s[s.length-1];
+ if(last&&last.day===day){last.data=data;last.t=Date.now()}else s.push({day,t:Date.now(),data});
+ s=s.slice(-7);try{localStorage.setItem(SNAP,JSON.stringify(s))}catch(e){localStorage.setItem(SNAP,JSON.stringify(s.slice(-2)))}}catch(e){}}
+function toast(t){const e=$('#toast');e.textContent=t;e.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>e.style.display='none',2600)}
+
+const cust=id=>db.customers.find(c=>c.id===id);
+const orderTotal=o=>o.items.reduce((s,i)=>s+num(i.qty)*num(i.rate),0);
+const paidFor=o=>db.payments.filter(p=>p.oid===o.id).reduce((s,p)=>s+num(p.amt),0);
+const balance=cid=>db.orders.filter(o=>o.cid===cid).reduce((s,o)=>s+orderTotal(o),0)-db.payments.filter(p=>p.cid===cid).reduce((s,p)=>s+num(p.amt),0);
+const stClass=s=>s===ST[0]?'s1':s===ST[1]?'s2':'s3';
+function waNum(p){let d=String(p||'').replace(/\D/g,'');if(d.startsWith('00'))d=d.slice(2);if(d.startsWith('0'))d='92'+d.slice(1);return d}
+function wa(phone,text){const n=waNum(phone);openURL('https://wa.me/'+n+'?text='+encodeURIComponent(text))}
+function printHTML(h){$('#printArea').innerHTML=h;window.print()}
+const NATIVE=!!(window.Capacitor&&Capacitor.isNativePlatform&&Capacitor.isNativePlatform());
+if(NATIVE)document.body.classList.add('native');
+function openURL(u){try{if(NATIVE&&Capacitor.Plugins.Browser){Capacitor.Plugins.Browser.open({url:u});return}}catch(e){}window.open(u,'_blank')}
+async function saveFile(name,text,mime){
+ if(NATIVE&&Capacitor.Plugins.Filesystem&&Capacitor.Plugins.Share){
+  try{const r=await Capacitor.Plugins.Filesystem.writeFile({path:name,data:text,directory:'CACHE',encoding:'utf8'});
+   await Capacitor.Plugins.Share.share({title:name,url:r.uri,dialogTitle:'Save / Share'});return true}catch(e){if(String(e).toLowerCase().includes('cancel'))return true}
+ }
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:mime}));a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000);return true;
+}
+
+const BDIR='TailorShop';
+const FS=()=>(NATIVE&&Capacitor.Plugins&&Capacitor.Plugins.Filesystem)||null;
+const dbEmpty=()=>!db.customers.length&&!db.orders.length;
+const phoneLast=()=>{const t=+localStorage.getItem('tailor_lastphone')||0;return t?new Date(t).toLocaleString('en-GB'):'—'};
+async function phoneWrite(name,text,storeKey){
+ const F=FS();const opt=n=>({path:BDIR+'/'+n,data:text,directory:'DOCUMENTS',encoding:'utf8',recursive:true});
+ let n=storeKey?(localStorage.getItem(storeKey)||name):name;
+ try{await F.writeFile(opt(n))}catch(e){
+  n=name.replace('.json','-'+Date.now().toString(36)+'.json');
+  await F.writeFile(opt(n));if(storeKey)localStorage.setItem(storeKey,n);
+ }
+}
+async function dailyBackup(){
+ const F=FS();if(!F||dbEmpty())return;
+ try{
+  const day=todayISO(),data=JSON.stringify(db);
+  await phoneWrite('auto-backup.json',data,'tailor_autoname');
+  if(localStorage.getItem('tailor_lastdaily')!==day){
+   await phoneWrite('backup-'+day+'.json',data);localStorage.setItem('tailor_lastdaily',day);
+   try{const l=await F.readdir({path:BDIR,directory:'DOCUMENTS'});
+    const names=l.files.map(f=>typeof f==='string'?f:f.name).filter(n=>/^backup-\d{4}-\d\d-\d\d.*\.json$/.test(n)).sort();
+    while(names.length>14)await F.deleteFile({path:BDIR+'/'+names.shift(),directory:'DOCUMENTS'});}catch(e){}
+  }
+  localStorage.setItem('tailor_lastphone',String(Date.now()));localStorage.removeItem('tailor_phoneerr');
+ }catch(e){localStorage.setItem('tailor_phoneerr',String((e&&e.message)||e))}
+}
+let autoT=null;
+function autoPhoneBackup(){if(!NATIVE)return;clearTimeout(autoT);autoT=setTimeout(dailyBackup,3000)}
+function restorePrompt(){
+ modal('Restore Data?','<p>اگر آپ پہلے یہ ایپ استعمال کر رہے تھے تو بیک اپ فائل چنیں (فون کے Documents/TailorShop فولڈر میں <b>auto-backup.json</b> یا <b>backup-تاریخ.json</b>)۔</p><div class="acts"><label class="btn" style="margin:0">Choose Backup File<input type="file" accept=".json" hidden onchange="restoreFile(this);closeModal()"></label><button class="btn gray" onclick="closeModal()">Start Fresh</button></div>');
+}
+async function tryAutoRestore(){
+ const F=FS();let best=null;
+ try{
+  const l=await F.readdir({path:BDIR,directory:'DOCUMENTS'});
+  for(const f of l.files){const n=typeof f==='string'?f:f.name;if(!/\.json$/.test(n))continue;let m=0;
+   try{const st=await F.stat({path:BDIR+'/'+n,directory:'DOCUMENTS'});m=+st.mtime||0}catch(e){}
+   if(!best||m>best.m)best={n,m};}
+  if(best){const r=await F.readFile({path:BDIR+'/'+best.n,directory:'DOCUMENTS',encoding:'utf8'});const d=JSON.parse(r.data);
+   if(d&&Array.isArray(d.customers)&&d.customers.length&&confirm('Phone mein purana backup mila ('+d.customers.length+' گاہک)۔ ڈیٹا واپس لائیں؟')){
+    db=Object.assign(blank(),d);db.settings=Object.assign(blank().settings,d.settings||{});save();go('home');toast('Data restored');return}}
+ }catch(e){}
+ if(!localStorage.getItem('tailor_askedrestore')){localStorage.setItem('tailor_askedrestore','1');if(dbEmpty())restorePrompt()}
+}
+async function initPhone(){
+ const F=FS();if(!F)return;
+ try{const p=await F.checkPermissions();if(p.publicStorage&&p.publicStorage!=='granted')await F.requestPermissions()}catch(e){}
+ if(dbEmpty())await tryAutoRestore();else dailyBackup();
+ document.addEventListener('visibilitychange',dailyBackup);
+ setInterval(dailyBackup,3600000);
+}
+const CFONT='"Noto Naskh Arabic","Noto Sans Arabic",Tahoma,Arial,sans-serif';
+function wrapText(x,text,maxW){const words=String(text).split(' ');const lines=[];let cur='';for(const w of words){const t=cur?cur+' '+w:w;if(x.measureText(t).width>maxW&&cur){lines.push(cur);cur=w}else cur=t}if(cur)lines.push(cur);return lines.length?lines:['']}
+async function billCanvas(o){
+ try{await document.fonts.ready}catch(e){}
+ const c=cust(o.cid)||{name:''},s=db.settings,tot=orderTotal(o),paid=paidFor(o),bal=balance(o.cid);
+ const W=720,P=32,SC=2,R=W-P,L=P,H0=3000;
+ const cv=document.createElement('canvas');cv.width=W*SC;cv.height=H0*SC;
+ const x=cv.getContext('2d');x.scale(SC,SC);x.direction='rtl';x.textBaseline='top';
+ x.fillStyle='#fff';x.fillRect(0,0,W,H0);
+ let y=P;
+ const T=(t,xx,yy,font,align,color)=>{x.font=font;x.textAlign=align||'right';x.fillStyle=color||'#000';x.fillText(String(t),xx,yy)};
+ T(s.shop,W/2,y,'bold 34px '+CFONT,'center');y+=54;
+ if(s.addr){T(s.addr,W/2,y,'20px '+CFONT,'center');y+=34}
+ if(s.phone){T(s.phone,W/2,y,'20px '+CFONT,'center');y+=34}
+ y+=4;x.fillStyle='#000';x.fillRect(L,y,W-2*P,2);y+=14;
+ T('بل نمبر: '+o.no,R,y,'bold 22px '+CFONT);T('تاریخ: '+fd(o.date),L,y,'22px '+CFONT,'left');y+=40;
+ T('گاہک: '+c.name,R,y,'bold 24px '+CFONT);y+=42;
+ if(o.due){T('تیاری کی تاریخ: '+fd(o.due),R,y,'22px '+CFONT);y+=40}
+ y+=6;
+ const cols=[['#',44],['تفصیل',286],['تعداد',70],['ریٹ',110],['رقم',150]];
+ const row=(cells,h,bold,bg)=>{let xr=R;cols.forEach((col,i)=>{const w=col[1];
+  if(bg){x.fillStyle=bg;x.fillRect(xr-w,y,w,h)}
+  x.strokeStyle='#000';x.lineWidth=1;x.strokeRect(xr-w,y,w,h);
+  x.fillStyle='#000';x.font=(bold?'bold ':'')+'20px '+CFONT;
+  if(i===1){x.textAlign='right';cells[i].forEach((ln,j)=>x.fillText(ln,xr-8,y+6+j*30))}
+  else{x.textAlign='center';x.fillText(String(cells[i]),xr-w/2,y+6)}
+  xr-=w});y+=h};
+ row(cols.map(c2=>c2[0]==='تفصیل'?['تفصیل']:c2[0]),40,true,'#e5e5e5');
+ x.font='20px '+CFONT;
+ o.items.forEach((it,k)=>{x.font='20px '+CFONT;const lines=wrapText(x,it.name,268);
+  row([k+1,lines,it.qty,fmt(num(it.rate)),fmt(num(it.qty)*num(it.rate))],Math.max(1,lines.length)*30+12,false)});
+ y+=18;
+ const sum=(label,val,bold,color)=>{T(label,R,y,(bold?'bold ':'')+'24px '+CFONT,'right',color);T(val,R-210,y,(bold?'bold ':'')+'24px '+CFONT,'right',color);y+=40};
+ sum('کل بل',fmt(tot));sum('وصول',fmt(paid));sum('اس بل کا باقی',fmt(tot-paid),true,tot-paid>0?'#b91c1c':'#15803d');
+ if(Math.round(bal)!==Math.round(tot-paid))sum('گاہک کا کل باقی',fmt(bal),true,'#b91c1c');
+ if(o.note){y+=4;T('نوٹ: '+o.note,R,y,'20px '+CFONT);y+=36}
+ y+=8;x.fillStyle='#000';for(let xx=L;xx<R;xx+=10)x.fillRect(xx,y,5,1.5);y+=12;
+ T('شکریہ — دوبارہ تشریف لائیں',W/2,y,'22px '+CFONT,'center');y+=44;
+ const out=document.createElement('canvas');out.width=W*SC;out.height=Math.ceil((y+P/2)*SC);
+ const ox=out.getContext('2d');ox.drawImage(cv,0,0);ox.strokeStyle='#000';ox.lineWidth=4;ox.strokeRect(2,2,out.width-4,out.height-4);
+ return out;
+}
+async function shareBillImage(id){
+ const o=db.orders.find(x=>x.id===id);if(!o)return;const c=cust(o.cid)||{};
+ toast('Bill image ban rahi hai...');
+ const cv=await billCanvas(o);const url=cv.toDataURL('image/png');const name='bill-'+o.no+'.png';
+ const F=FS();
+ if(NATIVE&&F&&Capacitor.Plugins.Share){
+  try{const r=await F.writeFile({path:name,data:url.split(',')[1],directory:'CACHE'});
+   await Capacitor.Plugins.Share.share({title:'Bill #'+o.no,text:(db.settings.shop||'')+' - Bill #'+o.no,url:r.uri,dialogTitle:'WhatsApp chunein'});return}catch(e){if(String(e).toLowerCase().includes('cancel'))return}
+ }
+ try{const blob=await (await fetch(url)).blob();const file=new File([blob],name,{type:'image/png'});
+  if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:name});return}}catch(e){if(e&&e.name==='AbortError')return}
+ const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();
+ toast('Image download ho gayi — WhatsApp mein attach karein');
+ if(c.phone)openURL('https://wa.me/'+waNum(c.phone));
+}
+
+
+
+/* ---------- navigation ---------- */
+let view='home',curCust=null,ordFilter='all',ordQ='',custQ='';
+function go(v,id){view=v;if(id!==undefined)curCust=id;render();window.scrollTo(0,0)}
+function render(){
+ $('#shopTitle').textContent=db.settings.shop;
+ document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===(view==='customer'?'customers':view)));
+ ({home:vHome,customers:vCustomers,customer:vCustomer,orders:vOrders,report:vReport,settings:vSettings})[view]($('#main'));
+}
+function modal(title,body,wide){$('#modal').innerHTML='<div class="mbox'+(wide?' wide':'')+'"><div class="mh"><b>'+title+'</b><button class="x" onclick="closeModal()">✕</button></div><div class="mb">'+body+'</div></div>';$('#modal').classList.add('open')}
+function closeModal(){$('#modal').classList.remove('open');$('#modal').innerHTML=''}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+
+/* ---------- home ---------- */
+function vHome(m){
+ const t=todayISO();
+ const pending=db.orders.filter(o=>o.status!==ST[2]);
+ const income=db.payments.filter(p=>p.date===t).reduce((s,p)=>s+num(p.amt),0);
+ const totBal=db.customers.reduce((s,c)=>s+Math.max(0,balance(c.id)),0);
+ const late=pending.filter(o=>o.due&&o.due<t).sort((a,b)=>a.due.localeCompare(b.due));
+ const ready=db.orders.filter(o=>o.status===ST[1]);
+ const old=Date.now()-Math.max(db.settings.lastBackup,+localStorage.getItem('tailor_lastphone')||0)>3*86400000;
+ const row=o=>{const c=cust(o.cid)||{};return '<tr class="click" onclick="billView(\''+o.id+'\')"><td>#'+o.no+'</td><td>'+esc(c.name)+'</td><td>'+fd(o.due)+'</td><td><span class="badge '+stClass(o.status)+'">'+o.status+'</span></td></tr>'};
+ m.innerHTML=(db.customers.length&&old?'<div class="banner"><span>⚠️ بیک اپ پرانا ہو گیا ہے۔ ڈیٹا بچانے کے لیے ابھی بیک اپ لیں۔</span><button class="btn" onclick="backupNow()">Backup Now</button></div>':'')+
+ '<div class="stats"><div class="stat"><small>کل گاہک</small><b>'+db.customers.length+'</b></div>'+
+ '<div class="stat"><small>زیر تیاری آرڈر</small><b>'+pending.length+'</b></div>'+
+ '<div class="stat"><small>آج کی وصولی</small><b>'+fmt(income)+'</b></div>'+
+ '<div class="stat"><small>کل باقی رقم</small><b class="due">'+fmt(totBal)+'</b></div></div>'+
+ '<div class="acts" style="margin:0 0 14px"><button class="btn" onclick="custForm()">+ New Customer</button><button class="btn blue" onclick="orderForm(\'\')">+ New Order / Bill</button><button class="btn gray" onclick="go(\'customers\')">Find Customer</button></div>'+
+ '<div class="card"><h3>⏰ تاخیر والے آرڈر</h3>'+(late.length?'<div class="scroll"><table class="tbl"><tr><th>بل</th><th>گاہک</th><th>تاریخ</th><th>حالت</th></tr>'+late.map(row).join('')+'</table></div>':'<p>کوئی نہیں ✔</p>')+'</div>'+
+ '<div class="card"><h3>✅ تیار — حوالے کرنے ہیں</h3>'+(ready.length?'<div class="scroll"><table class="tbl"><tr><th>بل</th><th>گاہک</th><th>تاریخ</th><th>حالت</th></tr>'+ready.map(row).join('')+'</table></div>':'<p>کوئی نہیں</p>')+'</div>'+
+ (db.customers.length?'':'<div class="card"><b>شروع کیسے کریں:</b><br>1) "نیا گاہک" بنائیں 2) اس کی ناپ لکھیں 3) آرڈر / بل بنائیں 4) واٹس ایپ پر بھیجیں۔<br>سیٹنگز میں اپنی دکان کا نام اور فون نمبر لکھ دیں۔<br><label class="btn gray" style="margin-top:8px">Restore from Backup File<input type="file" accept=".json" hidden onchange="restoreFile(this)"></label></div>');
+}
+
+/* ---------- customers ---------- */
+function vCustomers(m){
+ m.innerHTML='<div class="bar"><h2>گاہک</h2><button class="btn" onclick="custForm()">+ New Customer</button></div><div class="bar"><input id="cq" placeholder="نام یا فون نمبر سے تلاش..." value="'+esc(custQ)+'" oninput="custQ=this.value;drawCusts()"></div><div id="clist"></div>';
+ drawCusts();
+}
+function drawCusts(){
+ const q=custQ.trim().toLowerCase();
+ const l=db.customers.filter(c=>!q||c.name.toLowerCase().includes(q)||(c.phone||'').includes(q)).sort((a,b)=>a.name.localeCompare(b.name));
+ $('#clist').innerHTML=l.length?'<div class="scroll"><table class="tbl"><tr><th>نام</th><th>فون</th><th>باقی</th></tr>'+l.map(c=>{const b=balance(c.id);return '<tr class="click" onclick="go(\'customer\',\''+c.id+'\')"><td><b>'+esc(c.name)+'</b></td><td class="num">'+esc(c.phone)+'</td><td class="'+(b>0?'due':'')+'">'+fmt(b)+'</td></tr>'}).join('')+'</table></div>':'<div class="card">کوئی گاہک نہیں ملا۔</div>';
+}
+function custForm(id){
+ const c=id?cust(id):{name:'',phone:'',addr:'',note:''};
+ modal(id?'گاہک میں ترمیم':'نیا گاہک','<div class="grid"><label>نام<input id="f_name" value="'+esc(c.name)+'"></label><label>موبائل نمبر (واٹس ایپ کے لیے)<input id="f_phone" dir="ltr" inputmode="tel" placeholder="03001234567" value="'+esc(c.phone)+'"></label><label class="full">پتہ<input id="f_addr" value="'+esc(c.addr)+'"></label><label class="full">نوٹ<input id="f_note" value="'+esc(c.note)+'"></label></div><div class="acts"><button class="btn" onclick="saveCust(\''+(id||'')+'\')">Save</button><button class="btn gray" onclick="closeModal()">Cancel</button></div>');
+ setTimeout(()=>$('#f_name')&&$('#f_name').focus(),50);
+}
+function saveCust(id){
+ const name=$('#f_name').value.trim();if(!name)return toast('نام لکھیں');
+ const d={name,phone:$('#f_phone').value.trim(),addr:$('#f_addr').value.trim(),note:$('#f_note').value.trim()};
+ if(id){Object.assign(cust(id),d)}else{const c=Object.assign({id:uid(),created:todayISO()},d);db.customers.push(c);id=c.id}
+ save();closeModal();go('customer',id);toast('محفوظ ہو گیا');
+}
+function delCust(id){
+ const c=cust(id);if(!confirm('"'+c.name+'" اور اس کی ناپ، آرڈر اور حساب سب ختم ہو جائے گا۔ کیا واقعی حذف کریں؟'))return;
+ db.customers=db.customers.filter(x=>x.id!==id);db.measures=db.measures.filter(x=>x.cid!==id);db.orders=db.orders.filter(x=>x.cid!==id);db.payments=db.payments.filter(x=>x.cid!==id);
+ save();go('customers');
+}
+function ledger(cid){
+ const e=[];
+ db.orders.filter(o=>o.cid===cid).forEach(o=>e.push({d:o.date,t:0,desc:'بل #'+o.no+' — '+o.items.map(i=>i.name).join('، '),debit:orderTotal(o),credit:0,oid:o.id}));
+ db.payments.filter(p=>p.cid===cid).forEach(p=>{const o=p.oid?db.orders.find(x=>x.id===p.oid):null;e.push({d:p.date,t:1,desc:'وصولی'+(o?' (بل #'+o.no+')':'')+(p.note?' — '+p.note:''),debit:0,credit:num(p.amt),pid:p.id})});
+ e.sort((a,b)=>a.d.localeCompare(b.d)||a.t-b.t);
+ let r=0;e.forEach(x=>{r+=x.debit-x.credit;x.bal=r});return e;
+}
+function vCustomer(m){
+ const c=cust(curCust);if(!c){go('customers');return}
+ const bal=balance(c.id);
+ const ms=db.measures.filter(x=>x.cid===c.id).sort((a,b)=>b.date.localeCompare(a.date));
+ const os=db.orders.filter(o=>o.cid===c.id).sort((a,b)=>b.no-a.no);
+ const lg=ledger(c.id);
+ m.innerHTML='<div class="bar"><button class="btn gray sm" onclick="go(\'customers\')">← Back</button></div>'+
+ '<div class="card"><div class="bar"><div><h2 style="margin:0">'+esc(c.name)+'</h2><div class="num" style="direction:ltr;text-align:right">'+esc(c.phone)+'</div><div>'+esc(c.addr)+'</div>'+(c.note?'<div><small>📝 '+esc(c.note)+'</small></div>':'')+'</div>'+
+ '<div style="text-align:center"><small>باقی رقم</small><div class="big '+(bal>0?'due':'ok')+'">'+fmt(bal)+'</div></div></div>'+
+ '<div class="acts"><button class="btn blue" onclick="orderForm(\''+c.id+'\')">+ New Order / Bill</button><button class="btn" onclick="measForm(\''+c.id+'\')">+ New Measurement</button><button class="btn" onclick="payForm(\''+c.id+'\')">💰 Receive Payment</button><button class="btn wa" onclick="stmtWA(\''+c.id+'\')">WhatsApp: Statement</button><button class="btn gray pr" onclick="printHTML(stmtHTML(\''+c.id+'\'))">🖨 Print Statement</button><button class="btn gray" onclick="custForm(\''+c.id+'\')">Edit</button><button class="btn red" onclick="delCust(\''+c.id+'\')">Delete</button></div></div>'+
+ '<div class="card"><h3>📏 ناپ / سائز</h3>'+(ms.length?ms.map(x=>'<div style="border-bottom:1px solid var(--line);padding:8px 0"><b>'+esc(x.type)+'</b> <small>('+fd(x.date)+')</small> <button class="btn sm gray" onclick="measForm(\''+c.id+'\',\''+x.id+'\')">Edit</button> <button class="btn sm red" onclick="delMeas(\''+x.id+'\')">Delete</button><div>'+x.vals.map(v=>'<span class="chip">'+esc(v[0])+': <b>'+esc(v[1])+'</b></span>').join('')+'</div>'+(x.note?'<div><small>ڈیزائن/نوٹ: '+esc(x.note)+'</small></div>':'')+'</div>').join(''):'<p>ابھی کوئی ناپ محفوظ نہیں۔</p>')+'</div>'+
+ '<div class="card"><h3>🧾 آرڈر / بل</h3>'+(os.length?'<div class="scroll"><table class="tbl"><tr><th>بل</th><th>تاریخ</th><th>تیاری</th><th>کل</th><th>باقی</th><th>حالت</th></tr>'+os.map(o=>'<tr class="click" onclick="billView(\''+o.id+'\')"><td>#'+o.no+'</td><td>'+fd(o.date)+'</td><td>'+fd(o.due)+'</td><td>'+fmt(orderTotal(o))+'</td><td class="'+(orderTotal(o)-paidFor(o)>0?'due':'ok')+'">'+fmt(orderTotal(o)-paidFor(o))+'</td><td><span class="badge '+stClass(o.status)+'">'+o.status+'</span></td></tr>').join('')+'</table></div>':'<p>کوئی آرڈر نہیں۔</p>')+'</div>'+
+ '<div class="card"><h3>📒 حساب کتاب (کھاتہ)</h3>'+(lg.length?'<div class="scroll"><table class="tbl"><tr><th>تاریخ</th><th>تفصیل</th><th>بل</th><th>وصول</th><th>باقی</th><th></th></tr>'+lg.map(x=>'<tr><td>'+fd(x.d)+'</td><td>'+esc(x.desc)+'</td><td>'+(x.debit?fmt(x.debit):'')+'</td><td class="ok">'+(x.credit?fmt(x.credit):'')+'</td><td>'+fmt(x.bal)+'</td><td>'+(x.pid?'<button class="btn sm red" onclick="delPay(\''+x.pid+'\')">Delete</button>':'')+'</td></tr>').join('')+'</table></div>':'<p>ابھی کوئی لین دین نہیں۔</p>')+'</div>';
+}
+
+/* ---------- measurements ---------- */
+let mf=null;
+function measForm(cid,mid){
+ const m=mid?db.measures.find(x=>x.id===mid):{type:'شلوار قمیض',date:todayISO(),vals:TYPES['شلوار قمیض'].map(n=>[n,'']),note:''};
+ mf={cid,mid,type:m.type,date:m.date,vals:m.vals.map(v=>[v[0],v[1]]),note:m.note||''};
+ drawMeas();
+}
+function syncMeas(){
+ if(!$('#m_date'))return;
+ mf.date=$('#m_date').value;mf.note=$('#m_note').value;
+ mf.vals=[...document.querySelectorAll('.mrow')].map(r=>[r.querySelector('.mn').value,r.querySelector('.mv').value]);
+}
+function drawMeas(){
+ modal(mf.mid?'ناپ میں ترمیم':'نئی ناپ','<div class="grid"><label>قسم<select id="m_type" onchange="measType(this.value)">'+Object.keys(TYPES).map(t=>'<option'+(t===mf.type?' selected':'')+'>'+t+'</option>').join('')+'</select></label><label>تاریخ<input type="date" id="m_date" value="'+mf.date+'"></label></div><h3 style="margin-top:14px">سائز (انچ)</h3>'+
+ mf.vals.map((v,i)=>'<div class="mrow"><input class="mn" placeholder="ناپ کا نام" value="'+esc(v[0])+'"><input class="mv" inputmode="decimal" dir="ltr" placeholder="سائز" value="'+esc(v[1])+'"><button class="x" onclick="delMrow('+i+')">✕</button></div>').join('')+
+ '<button class="btn gray sm" onclick="addMrow()">+ Add Field</button><label style="margin-top:12px">ڈیزائن / ہدایات (کالر، کف، جیب، بٹن وغیرہ)<textarea id="m_note" rows="3">'+esc(mf.note)+'</textarea></label><div class="acts"><button class="btn" onclick="saveMeas()">Save</button><button class="btn gray" onclick="closeModal()">Cancel</button></div>',true);
+}
+function measType(t){
+ syncMeas();const old=mf.vals,oldList=TYPES[mf.type]||[];
+ const base=TYPES[t].map(n=>{const f=old.find(x=>x[0]===n);return[n,f?f[1]:'']});
+ const extra=old.filter(x=>!TYPES[t].includes(x[0])&&!oldList.includes(x[0])&&(x[0]||x[1]));
+ mf.type=t;mf.vals=base.concat(extra);drawMeas();
+}
+function addMrow(){syncMeas();mf.vals.push(['','']);drawMeas()}
+function delMrow(i){syncMeas();mf.vals.splice(i,1);drawMeas()}
+function saveMeas(){
+ syncMeas();mf.type=$('#m_type').value;
+ const vals=mf.vals.filter(v=>v[0].trim()&&String(v[1]).trim()).map(v=>[v[0].trim(),String(v[1]).trim()]);
+ if(!vals.length)return toast('کم از کم ایک ناپ لکھیں');
+ if(mf.mid){Object.assign(db.measures.find(x=>x.id===mf.mid),{type:mf.type,date:mf.date,vals,note:mf.note})}
+ else db.measures.push({id:uid(),cid:mf.cid,type:mf.type,date:mf.date,vals,note:mf.note});
+ save();closeModal();render();toast('ناپ محفوظ ہو گئی');
+}
+function delMeas(id){if(!confirm('یہ ناپ حذف کریں؟'))return;db.measures=db.measures.filter(x=>x.id!==id);save();render()}
+
+/* ---------- orders ---------- */
+let of=null;
+function orderForm(cid,oid){
+ const o=oid?db.orders.find(x=>x.id===oid):{cid:cid||'',date:todayISO(),due:'',status:ST[0],note:'',items:[{name:'',qty:1,rate:''}]};
+ of={oid,cid:o.cid,date:o.date,due:o.due||'',status:o.status,note:o.note||'',items:o.items.map(i=>({name:i.name,qty:i.qty,rate:i.rate})),adv:''};
+ drawOrder();
+}
+function syncOrder(){
+ if(!$('#o_cid'))return;
+ of.cid=$('#o_cid').value;of.date=$('#o_date').value;of.due=$('#o_due').value;of.status=$('#o_status').value;of.note=$('#o_note').value;
+ if($('#o_adv'))of.adv=$('#o_adv').value;
+ of.items=[...document.querySelectorAll('.irow')].map(r=>({name:r.querySelector('.in').value,qty:r.querySelector('.iq').value,rate:r.querySelector('.ir').value}));
+}
+function drawOrder(){
+ const cs=db.customers.slice().sort((a,b)=>a.name.localeCompare(b.name));
+ const names=new Set(['شلوار قمیض','قمیض','شلوار','پینٹ','شرٹ','کوٹ','ویسٹ کوٹ','شیروانی','کڑھائی / ڈیزائن','مرمت / آلٹریشن']);
+ db.orders.forEach(o=>o.items.forEach(i=>names.add(i.name)));
+ const rows=of.items.map((i,k)=>'<tr class="irow"><td><input class="in" list="itemnames" placeholder="مثلاً شلوار قمیض" value="'+esc(i.name)+'"></td><td style="width:70px"><input class="iq" type="number" min="0" step="any" dir="ltr" value="'+esc(i.qty)+'" oninput="calcOrder()"></td><td style="width:100px"><input class="ir" type="number" min="0" step="any" dir="ltr" value="'+esc(i.rate)+'" oninput="calcOrder()"></td><td class="itot num" style="width:80px">0</td><td style="width:30px"><button class="x" onclick="delItem('+k+')">✕</button></td></tr>').join('');
+ modal(of.oid?'آرڈر میں ترمیم':'نیا آرڈر / بل',
+ '<div class="grid"><label class="full">گاہک<select id="o_cid"><option value="">-- منتخب کریں --</option>'+cs.map(c=>'<option value="'+c.id+'"'+(c.id===of.cid?' selected':'')+'>'+esc(c.name)+(c.phone?' — '+esc(c.phone):'')+'</option>').join('')+'</select></label><label>آرڈر کی تاریخ<input type="date" id="o_date" value="'+of.date+'"></label><label>تیاری کی تاریخ<input type="date" id="o_due" value="'+of.due+'"></label><label>حالت<select id="o_status">'+ST.map(s=>'<option'+(s===of.status?' selected':'')+'>'+s+'</option>').join('')+'</select></label></div>'+
+ '<datalist id="itemnames">'+[...names].map(n=>'<option value="'+esc(n)+'">').join('')+'</datalist>'+
+ '<h3 style="margin-top:14px">آئٹم</h3><div class="scroll"><table style="width:100%"><tr><th align="right">تفصیل</th><th>تعداد</th><th>ریٹ</th><th>رقم</th><th></th></tr>'+rows+'</table></div><button class="btn gray sm" onclick="addItem()">+ Add Item</button>'+
+ '<div style="margin-top:12px;font-size:20px">کل: <b id="o_total">0</b></div>'+
+ (of.oid?'':'<label style="margin-top:8px">ایڈوانس (جو ابھی لیا)<input id="o_adv" type="number" min="0" dir="ltr" value="'+esc(of.adv)+'" oninput="calcOrder()"></label><div>باقی: <b id="o_rem">0</b></div>')+
+ '<label style="margin-top:8px">نوٹ<input id="o_note" value="'+esc(of.note)+'"></label><div class="acts"><button class="btn" onclick="saveOrder()">Save &amp; View Bill</button><button class="btn gray" onclick="closeModal()">Cancel</button></div>',true);
+ calcOrder();
+}
+function calcOrder(){
+ let t=0;document.querySelectorAll('.irow').forEach(r=>{const v=num(r.querySelector('.iq').value)*num(r.querySelector('.ir').value);r.querySelector('.itot').textContent=fmt(v);t+=v});
+ $('#o_total').textContent=fmt(t);
+ if($('#o_rem'))$('#o_rem').textContent=fmt(t-num($('#o_adv').value));
+}
+function addItem(){syncOrder();of.items.push({name:'',qty:1,rate:''});drawOrder()}
+function delItem(k){syncOrder();if(of.items.length>1)of.items.splice(k,1);drawOrder()}
+function saveOrder(){
+ syncOrder();const s=of;
+ if(!s.cid)return toast('گاہک منتخب کریں');
+ const items=s.items.filter(i=>i.name.trim()).map(i=>({name:i.name.trim(),qty:num(i.qty)||1,rate:num(i.rate)}));
+ if(!items.length)return toast('کم از کم ایک آئٹم لکھیں');
+ let o;
+ if(s.oid){o=db.orders.find(x=>x.id===s.oid);Object.assign(o,{cid:s.cid,date:s.date,due:s.due,status:s.status,note:s.note,items});db.payments.filter(p=>p.oid===o.id).forEach(p=>p.cid=o.cid)}
+ else{o={id:uid(),no:db.settings.billNo++,cid:s.cid,date:s.date,due:s.due,status:s.status,note:s.note,items};db.orders.push(o);const adv=num(s.adv);if(adv>0)db.payments.push({id:uid(),cid:o.cid,oid:o.id,date:s.date,amt:adv,note:'ایڈوانس'})}
+ save();closeModal();render();billView(o.id);
+}
+function delOrder(id){
+ if(!confirm('یہ بل اور اس کی وصولیاں حذف کریں؟'))return;
+ db.orders=db.orders.filter(o=>o.id!==id);db.payments=db.payments.filter(p=>p.oid!==id);save();closeModal();render();
+}
+function setStatus(id,v){
+ const o=db.orders.find(x=>x.id===id);o.status=v;save();render();
+ const c=cust(o.cid);
+ if(v===ST[1]&&c&&c.phone&&confirm('گاہک کو واٹس ایپ پر اطلاع بھیجیں کہ کپڑے تیار ہیں؟'))wa(c.phone,'السلام علیکم '+c.name+' صاحب،\n'+db.settings.shop+' کی طرف سے اطلاع: آپ کے کپڑے (بل #'+o.no+') تیار ہیں۔ تشریف لا کر لے جائیں۔\nباقی رقم: '+fmt(orderTotal(o)-paidFor(o))+' روپے\nشکریہ');
+}
+function vOrders(m){
+ m.innerHTML='<div class="bar"><h2>آرڈر اور بل</h2><button class="btn" onclick="orderForm(\'\')">+ New Order</button></div><div class="bar"><input placeholder="گاہک کا نام یا بل نمبر..." value="'+esc(ordQ)+'" oninput="ordQ=this.value;drawOrders()"><select onchange="ordFilter=this.value;drawOrders()"><option value="all">تمام</option>'+ST.map(s=>'<option'+(s===ordFilter?' selected':'')+'>'+s+'</option>').join('')+'</select></div><div id="olist"></div>';
+ drawOrders();
+}
+function drawOrders(){
+ const q=ordQ.trim().toLowerCase(),t=todayISO();
+ const l=db.orders.filter(o=>{const c=cust(o.cid)||{name:''};return(ordFilter==='all'||o.status===ordFilter)&&(!q||c.name.toLowerCase().includes(q)||String(o.no)===q)}).sort((a,b)=>b.no-a.no);
+ $('#olist').innerHTML=l.length?'<div class="scroll"><table class="tbl"><tr><th>بل</th><th>گاہک</th><th>تاریخ</th><th>تیاری</th><th>کل</th><th>باقی</th><th>حالت</th><th></th></tr>'+l.map(o=>{const c=cust(o.cid)||{name:'؟'};const late=o.due&&o.due<t&&o.status!==ST[2];const rem=orderTotal(o)-paidFor(o);
+  return '<tr><td>#'+o.no+'</td><td>'+esc(c.name)+'</td><td>'+fd(o.date)+'</td><td class="'+(late?'due':'')+'">'+fd(o.due)+'</td><td>'+fmt(orderTotal(o))+'</td><td class="'+(rem>0?'due':'ok')+'">'+fmt(rem)+'</td><td><select style="width:auto" onchange="setStatus(\''+o.id+'\',this.value)">'+ST.map(s=>'<option'+(s===o.status?' selected':'')+'>'+s+'</option>').join('')+'</select></td><td style="white-space:nowrap"><button class="btn sm" onclick="billView(\''+o.id+'\')">Bill</button> <button class="btn sm gray" onclick="payForm(\''+o.cid+'\',\''+o.id+'\')">Payment</button></td></tr>'}).join('')+'</table></div>':'<div class="card">کوئی آرڈر نہیں۔</div>';
+}
+
+/* ---------- payments ---------- */
+function payForm(cid,oid){
+ const c=cust(cid);const os=db.orders.filter(o=>o.cid===cid).sort((a,b)=>b.no-a.no);
+ modal('رقم وصول — '+esc(c.name),'<div>موجودہ باقی: <b class="due">'+fmt(balance(cid))+'</b></div><div class="grid" style="margin-top:10px"><label>رقم<input id="p_amt" type="number" min="0" dir="ltr" inputmode="decimal"></label><label>تاریخ<input id="p_date" type="date" value="'+todayISO()+'"></label><label>کس بل کے لیے<select id="p_oid"><option value="">عمومی (کسی خاص بل کے بغیر)</option>'+os.map(o=>'<option value="'+o.id+'"'+(o.id===oid?' selected':'')+'>بل #'+o.no+' — باقی '+fmt(orderTotal(o)-paidFor(o))+'</option>').join('')+'</select></label><label>نوٹ<input id="p_note"></label></div><div class="acts"><button class="btn" onclick="savePay(\''+cid+'\')">Save</button><button class="btn gray" onclick="closeModal()">Cancel</button></div>');
+ setTimeout(()=>$('#p_amt')&&$('#p_amt').focus(),50);
+}
+function savePay(cid){
+ const amt=num($('#p_amt').value);if(amt<=0)return toast('رقم لکھیں');
+ db.payments.push({id:uid(),cid,oid:$('#p_oid').value||'',date:$('#p_date').value||todayISO(),amt,note:$('#p_note').value.trim()});
+ save();closeModal();render();toast('وصولی درج ہو گئی');
+}
+function delPay(id){if(!confirm('یہ وصولی حذف کریں؟'))return;db.payments=db.payments.filter(p=>p.id!==id);save();render()}
+
+/* ---------- bill ---------- */
+function billHTML(o){
+ const c=cust(o.cid)||{name:''},s=db.settings,tot=orderTotal(o),paid=paidFor(o),bal=balance(o.cid);
+ return '<div class="bill"><div class="bh"><h2>'+esc(s.shop)+'</h2><div>'+esc(s.addr)+'</div><div dir="ltr">'+esc(s.phone)+'</div></div>'+
+ '<div class="bmeta"><span>بل نمبر: <b>'+o.no+'</b></span><span>تاریخ: '+fd(o.date)+'</span></div>'+
+ '<div class="bmeta"><span>گاہک: <b>'+esc(c.name)+'</b></span><span>تیاری کی تاریخ: '+(fd(o.due)||'—')+'</span></div>'+
+ '<table class="bt"><tr><th>#</th><th>تفصیل</th><th>تعداد</th><th>ریٹ</th><th>رقم</th></tr>'+o.items.map((i,k)=>'<tr><td>'+(k+1)+'</td><td>'+esc(i.name)+'</td><td>'+i.qty+'</td><td>'+fmt(num(i.rate))+'</td><td>'+fmt(num(i.qty)*num(i.rate))+'</td></tr>').join('')+'</table>'+
+ '<div class="bsum"><div>کل بل: <b>'+fmt(tot)+'</b></div><div>وصول: <b>'+fmt(paid)+'</b></div><div>اس بل کا باقی: <b>'+fmt(tot-paid)+'</b></div>'+(Math.round(bal)!==Math.round(tot-paid)?'<div>گاہک کا کل باقی: <b>'+fmt(bal)+'</b></div>':'')+'</div>'+
+ (o.note?'<div>نوٹ: '+esc(o.note)+'</div>':'')+'<div class="bfoot">شکریہ — دوبارہ تشریف لائیں</div></div>';
+}
+function billText(o){
+ const c=cust(o.cid)||{name:''},s=db.settings,tot=orderTotal(o),paid=paidFor(o);
+ return '*'+s.shop+'*\n'+(s.phone?'فون: '+s.phone+'\n':'')+'────────────\nبل نمبر: '+o.no+'\nتاریخ: '+fd(o.date)+'\nگاہک: '+c.name+'\n────────────\n'+
+ o.items.map(i=>'• '+i.name+' × '+i.qty+' = '+fmt(num(i.qty)*num(i.rate))).join('\n')+'\n────────────\nکل بل: '+fmt(tot)+'\nوصول: '+fmt(paid)+'\n*باقی: '+fmt(tot-paid)+'*\n'+(o.due?'تیاری کی تاریخ: '+fd(o.due)+'\n':'')+'شکریہ 🙏';
+}
+function billView(id){
+ const o=db.orders.find(x=>x.id===id);if(!o)return;const c=cust(o.cid)||{};
+ modal('بل #'+o.no,billHTML(o)+'<div class="acts"><button class="btn pr" onclick="printHTML(billHTML(db.orders.find(x=>x.id===\''+id+'\')))">🖨 Print</button><button class="btn wa" onclick="shareBillImage(\''+id+'\')">Send Bill on WhatsApp (Image)</button><button class="btn gray" onclick="wa(\''+esc(c.phone||'')+'\',billText(db.orders.find(x=>x.id===\''+id+'\')))">Send as Text</button><button class="btn gray" onclick="payForm(\''+o.cid+'\',\''+id+'\')">Payment</button><button class="btn gray" onclick="orderForm(\'\',\''+id+'\')">Edit</button><button class="btn red" onclick="delOrder(\''+id+'\')">Delete</button></div>'+'<div><small>💡 Image bhejne ke liye list mein WhatsApp chunein, phir "'+esc(c.name||'')+'" ka chat ('+esc(c.phone||'نمبر درج نہیں')+')۔</small></div>',true);
+}
+
+/* ---------- statement ---------- */
+function stmtHTML(cid){
+ const c=cust(cid),s=db.settings,lg=ledger(cid);
+ return '<div class="bill"><div class="bh"><h2>'+esc(s.shop)+'</h2><div dir="ltr">'+esc(s.phone)+'</div></div><div class="bmeta"><span>حساب: <b>'+esc(c.name)+'</b></span><span>تاریخ: '+fd(todayISO())+'</span></div><table class="bt"><tr><th>تاریخ</th><th>تفصیل</th><th>بل</th><th>وصول</th><th>باقی</th></tr>'+lg.map(x=>'<tr><td>'+fd(x.d)+'</td><td>'+esc(x.desc)+'</td><td>'+(x.debit?fmt(x.debit):'')+'</td><td>'+(x.credit?fmt(x.credit):'')+'</td><td>'+fmt(x.bal)+'</td></tr>').join('')+'</table><div class="bsum"><div>کل باقی رقم: <b>'+fmt(balance(cid))+'</b></div></div></div>';
+}
+function stmtText(cid){
+ const c=cust(cid),s=db.settings;
+ const tot=db.orders.filter(o=>o.cid===cid).reduce((a,o)=>a+orderTotal(o),0),paid=db.payments.filter(p=>p.cid===cid).reduce((a,p)=>a+num(p.amt),0);
+ const pend=db.orders.filter(o=>o.cid===cid&&orderTotal(o)-paidFor(o)>0);
+ return '*'+s.shop+'*\nحساب — '+c.name+'\nتاریخ: '+fd(todayISO())+'\n────────────\nکل بل: '+fmt(tot)+'\nکل وصول: '+fmt(paid)+'\n*باقی رقم: '+fmt(tot-paid)+'*'+(pend.length?'\n\nبقایا بل:\n'+pend.map(o=>'• بل #'+o.no+' ('+fd(o.date)+') — '+fmt(orderTotal(o)-paidFor(o))).join('\n'):'')+'\n\nشکریہ 🙏';
+}
+function stmtWA(cid){wa(cust(cid).phone,stmtText(cid))}
+function remindText(c){return 'السلام علیکم '+c.name+' صاحب،\n'+db.settings.shop+' کی طرف سے یاد دہانی: آپ کی '+fmt(balance(c.id))+' روپے رقم باقی ہے۔ براہِ کرم جلد ادا کر دیں۔ شکریہ 🙏'}
+
+/* ---------- report ---------- */
+function vReport(m){
+ const mon=vReport.mon||todayISO().slice(0,7);vReport.mon=mon;
+ const pays=db.payments.filter(p=>p.date.startsWith(mon)),ords=db.orders.filter(o=>o.date.startsWith(mon));
+ const inc=pays.reduce((s,p)=>s+num(p.amt),0),sales=ords.reduce((s,o)=>s+orderTotal(o),0);
+ const dues=db.customers.map(c=>({c,b:balance(c.id)})).filter(x=>x.b>0).sort((a,b)=>b.b-a.b);
+ m.innerHTML='<h2>رپورٹ اور باقی رقم</h2><div class="card"><label style="max-width:240px">مہینہ<input type="month" value="'+mon+'" onchange="vReport.mon=this.value;render()"></label><div class="stats" style="margin-top:12px"><div class="stat"><small>اس مہینے کے آرڈر</small><b>'+ords.length+'</b></div><div class="stat"><small>کل بل (سیل)</small><b>'+fmt(sales)+'</b></div><div class="stat"><small>کل وصولی</small><b class="ok">'+fmt(inc)+'</b></div></div></div>'+
+ '<div class="card"><h3>💸 باقی رقم والے گاہک (کل: '+fmt(dues.reduce((s,x)=>s+x.b,0))+')</h3>'+(dues.length?'<div class="scroll"><table class="tbl"><tr><th>گاہک</th><th>فون</th><th>باقی</th><th></th></tr>'+dues.map(x=>'<tr><td><a href="#" onclick="go(\'customer\',\''+x.c.id+'\');return false">'+esc(x.c.name)+'</a></td><td class="num">'+esc(x.c.phone)+'</td><td class="due">'+fmt(x.b)+'</td><td><button class="btn wa sm" onclick="wa(cust(\''+x.c.id+'\').phone,remindText(cust(\''+x.c.id+'\')))">WhatsApp Reminder</button></td></tr>').join('')+'</table></div>':'<p>کسی کی رقم باقی نہیں ✔</p>')+'</div>';
+}
+
+/* ---------- settings / backup ---------- */
+function vSettings(m){
+ const s=db.settings,snaps=getSnaps().slice().reverse();
+ m.innerHTML='<h2>سیٹنگز اور بیک اپ</h2><div class="card"><h3>دکان کی معلومات (بل پر چھپیں گی)</h3><div class="grid"><label>دکان کا نام<input id="s_shop" value="'+esc(s.shop)+'"></label><label>فون نمبر<input id="s_phone" dir="ltr" value="'+esc(s.phone)+'"></label><label class="full">پتہ<input id="s_addr" value="'+esc(s.addr)+'"></label><label>اگلا بل نمبر<input id="s_bill" type="number" min="1" dir="ltr" value="'+s.billNo+'"></label></div><div class="acts"><button class="btn" onclick="saveSettings()">Save</button></div></div>'+
+ '<div class="card"><h3>💾 بیک اپ</h3><p>Phone auto-backup (Documents/TailorShop): <b>'+phoneLast()+'</b>'+(localStorage.getItem('tailor_phoneerr')?' <span class="due">⚠️ '+esc(localStorage.getItem('tailor_phoneerr'))+'</span>':'')+'<br>آخری manual بیک اپ: <b>'+(s.lastBackup?new Date(s.lastBackup).toLocaleString('en-GB'):'کبھی نہیں')+'</b><br><small>ہفتے میں ایک بار بیک اپ فائل USB، واٹس ایپ یا گوگل ڈرائیو میں محفوظ کریں تاکہ کمپیوٹر خراب ہونے پر بھی ڈیٹا بچا رہے۔</small></p><div class="acts"><button class="btn" onclick="backupNow()">⬇️ Download Backup</button><label class="btn gray" style="margin:0">⬆️ Restore from Backup File<input type="file" accept=".json" hidden onchange="restoreFile(this)"></label><button class="btn gray" onclick="exportCSV()">📊 Export Customers (Excel/CSV)</button></div></div>'+
+ '<div class="card"><h3>🕘 خودکار بیک اپ (پچھلے دن)</h3><small>پروگرام خود روزانہ کی کاپی رکھتا ہے (آخری 7 دن)۔</small>'+(snaps.length?'<table class="tbl" style="margin-top:8px">'+snaps.map(x=>'<tr><td>'+fd(x.day)+'</td><td>'+Math.round(x.data.length/1024)+' KB</td><td><button class="btn sm gray" onclick="restoreSnap(\''+x.day+'\')">Restore this day</button></td></tr>').join('')+'</table>':'<p>ابھی کوئی نہیں۔</p>')+'</div>'+
+ '<div class="card"><h3>⚠️ تمام ڈیٹا صاف کریں</h3><button class="btn red" onclick="wipeAll()">Delete All Data</button></div>'+
+ '<div class="card"><small>اہم: ایپ ہر روز اور ہر تبدیلی کے بعد خود بخود فون کے Documents/TailorShop فولڈر میں بیک اپ بناتی ہے۔ ایپ ان انسٹال ہو جائے تو بھی یہ فولڈر فون میں رہتا ہے؛ دوبارہ انسٹال کرنے پر ایپ پرانا ڈیٹا خود تلاش کر کے واپس لانے کی پیشکش کرتی ہے (نہ ملے تو "Restore from Backup File" سے فائل چنیں)۔ اس فولڈر کو delete نہ کریں۔ (براؤزر میں کھولیں تو ڈیٹا اسی براؤزر میں رہتا ہے۔)</small></div>';
+}
+function saveSettings(){
+ const s=db.settings;s.shop=$('#s_shop').value.trim()||'میرا ٹیلر شاپ';s.phone=$('#s_phone').value.trim();s.addr=$('#s_addr').value.trim();s.billNo=Math.max(1,parseInt($('#s_bill').value)||1);
+ save();render();toast('محفوظ ہو گیا');
+}
+async function backupNow(){
+ await saveFile('tailor-backup-'+todayISO()+'.json',JSON.stringify(db),'application/json');
+ db.settings.lastBackup=Date.now();save();toast('Backup ready');if(view==='settings'||view==='home')render();
+}
+function restoreFile(inp){
+ const f=inp.files[0];if(!f)return;const r=new FileReader();
+ r.onload=()=>{try{const d=JSON.parse(r.result);if(!d||!Array.isArray(d.customers))throw 0;
+  if(!confirm('موجودہ ڈیٹا کی جگہ اس فائل کا ڈیٹا آ جائے گا ('+d.customers.length+' گاہک)۔ جاری رکھیں؟'))return;
+  snapshot();db=Object.assign(blank(),d);db.settings=Object.assign(blank().settings,d.settings||{});save();go('home');toast('ڈیٹا واپس آ گیا')}catch(e){alert('یہ درست بیک اپ فائل نہیں ہے۔')}};
+ r.readAsText(f);inp.value='';
+}
+function restoreSnap(day){
+ const s=getSnaps().find(x=>x.day===day);if(!s||!confirm(fd(day)+' کی کاپی واپس لائیں؟ موجودہ ڈیٹا بدل جائے گا۔'))return;
+ db=Object.assign(blank(),JSON.parse(s.data));try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){}go('home');toast('واپس آ گیا');
+}
+function exportCSV(){
+ const rows=[['نام','فون','پتہ','کل بل','وصول','باقی']];
+ db.customers.forEach(c=>{const t=db.orders.filter(o=>o.cid===c.id).reduce((a,o)=>a+orderTotal(o),0);const p=db.payments.filter(x=>x.cid===c.id).reduce((a,x)=>a+num(x.amt),0);rows.push([c.name,c.phone,c.addr,t,p,t-p])});
+ const csv='\ufeff'+rows.map(r=>r.map(v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"').join(',')).join('\r\n');
+ saveFile('customers-'+todayISO()+'.csv',csv,'text/csv;charset=utf-8');
+}
+function wipeAll(){
+ if(!confirm('سارا ڈیٹا ختم ہو جائے گا! پہلے بیک اپ لے لیا ہے؟'))return;
+ if(prompt('تصدیق کے لیے "حذف" لکھیں')!=='حذف')return;
+ snapshot();const lb=db.settings;db=blank();db.settings.shop=lb.shop;db.settings.phone=lb.phone;db.settings.addr=lb.addr;save();go('home');
+}
+
+try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
+render();
+initPhone();
+
+(function(){const sp=document.getElementById('splash');if(!sp)return;let gone=false;const hide=()=>{if(gone)return;gone=true;sp.classList.add('hide');setTimeout(()=>sp.remove(),800)};setTimeout(hide,3000);sp.addEventListener('click',hide)})();
+</script>
+</body>
+</html>
